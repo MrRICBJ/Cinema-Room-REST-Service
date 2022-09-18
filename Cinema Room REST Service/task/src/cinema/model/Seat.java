@@ -1,5 +1,8 @@
-package cinema.simple;
+package cinema.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Seat {
     private int row;
     private int column;

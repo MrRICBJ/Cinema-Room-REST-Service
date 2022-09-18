@@ -1,13 +1,14 @@
-package cinema.simple;
+package cinema.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Statistics {
-    private int current_income, number_of_available_seats, number_of_purchased_tickets;
+    private int current_income;
+    private int number_of_available_seats = 81;
+    private int number_of_purchased_tickets;
 
     public Statistics() {}
-
-    public Statistics(int number_of_available_seats) {
-        this.number_of_available_seats = number_of_available_seats;
-    }
 
     public void setCurrent_income(int current_income, int index) {
         this.current_income = index > 0 ? this.current_income + current_income : this.current_income - current_income;

@@ -1,10 +1,13 @@
-package cinema.simple;
+package cinema.model;
+
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class Client {
-    private UUID token = UUID.randomUUID();
-    private Seat ticket;
+    private final UUID token = UUID.randomUUID();
+    private final Seat ticket;
 
     public UUID getToken() {
         return token;

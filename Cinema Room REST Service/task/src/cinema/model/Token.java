@@ -1,7 +1,10 @@
-package cinema.simple;
+package cinema.model;
+
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class Token {
     private UUID token;
 

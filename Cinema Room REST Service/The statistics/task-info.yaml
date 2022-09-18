@@ -390,7 +390,54 @@ files:
         };
     }
   learner_created: false
-- name: src/cinema/simple/Cinema.java
+- name: src/cinema/controller/MainController.java
+  visible: true
+  text: |
+    package cinema.controller;
+
+    import cinema.simple.*;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
+
+    import java.util.*;
+
+    @RestController
+    public class MainController {
+        private final Cinema cinema = new Cinema(9, 9);
+        private ArrayList<Seat> seatsBuy = new ArrayList<>();
+        private ArrayList<Client> clientList = new ArrayList<>();
+        private Map<UUID, Seat> map = new HashMap<>();
+
+        @GetMapping("/seats")
+        public Cinema seats() {
+            return this.cinema;
+        }
+
+        @PostMapping("/purchase")
+        public ResponseEntity<?> purchase(@RequestBody Seat cell) {
+            if (cell.getRow() >= 1 && cell.getRow() <= 9 && cell.getColumn() >= 1 && cell.getColumn() <= 9) {
+                if (seatsBuy.contains(cell))
+                    return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
+                seatsBuy.add(cell);
+                cell.setPrice();
+                clientList.add(new Client(cell));
+                map.put(clientList.get(clientList.size() - 1).getToken(), clientList.get(clientList.size() - 1).getTicket());
+                return new ResponseEntity<>(clientList.get(clientList.size() - 1), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(Map.of("error", "The number of a row or a column is out of bounds!"), HttpStatus.BAD_REQUEST);
+        }
+
+        @PostMapping("/return")
+        public ResponseEntity<?> token (@RequestBody Token token) {
+            if (map.containsKey(token.getToken()))
+                return new ResponseEntity<>(Map.of("returned_ticket", map.get(token.getToken())), HttpStatus.OK);
+            return new ResponseEntity<>(Map.of("error", "Wrong token!"), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+  learner_created: true
+- name: src/cinema/model/Cinema.java
   visible: true
   text: |
     package cinema.simple;
@@ -431,7 +478,7 @@ files:
         public Cinema(){}
     }
   learner_created: true
-- name: src/cinema/simple/Seat.java
+- name: src/cinema/model/Seat.java
   visible: true
   text: |
     package cinema.simple;
@@ -483,7 +530,7 @@ files:
         }
     }
   learner_created: true
-- name: src/cinema/simple/Token.java
+- name: src/cinema/model/Token.java
   visible: true
   text: |
     package cinema.simple;
@@ -508,7 +555,7 @@ files:
         }
     }
   learner_created: true
-- name: src/cinema/simple/Client.java
+- name: src/cinema/model/Client.java
   visible: true
   text: |
     package cinema.simple;
@@ -532,54 +579,10 @@ files:
         }
     }
   learner_created: true
-- name: src/cinema/controller/MainController.java
+- name: src/cinema/model/Statistics.java
   visible: true
-  text: |
-    package cinema.controller;
-
-    import cinema.simple.*;
-    import org.springframework.http.HttpStatus;
-    import org.springframework.http.ResponseEntity;
-    import org.springframework.web.bind.annotation.*;
-
-    import java.util.*;
-
-    @RestController
-    public class MainController {
-        private final Cinema cinema = new Cinema(9, 9);
-        private ArrayList<Seat> seatsBuy = new ArrayList<>();
-        private ArrayList<Client> clientList = new ArrayList<>();
-        private Map<UUID, Seat> map = new HashMap<>();
-
-        @GetMapping("/seats")
-        public Cinema seats() {
-            return this.cinema;
-        }
-
-        @PostMapping("/purchase")
-        public ResponseEntity<?> purchase(@RequestBody Seat cell) {
-            if (cell.getRow() >= 1 && cell.getRow() <= 9 && cell.getColumn() >= 1 && cell.getColumn() <= 9) {
-                if (seatsBuy.contains(cell))
-                    return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
-                seatsBuy.add(cell);
-                cell.setPrice();
-                clientList.add(new Client(cell));
-                map.put(clientList.get(clientList.size() - 1).getToken(), clientList.get(clientList.size() - 1).getTicket());
-                return new ResponseEntity<>(clientList.get(clientList.size() - 1), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(Map.of("error", "The number of a row or a column is out of bounds!"), HttpStatus.BAD_REQUEST);
-        }
-
-        @PostMapping("/return")
-        public ResponseEntity<?> token (@RequestBody Token token) {
-            if (map.containsKey(token.getToken()))
-                return new ResponseEntity<>(Map.of("returned_ticket", map.get(token.getToken())), HttpStatus.OK);
-            return new ResponseEntity<>(Map.of("error", "Wrong token!"), HttpStatus.BAD_REQUEST);
-        }
-
-    }
   learner_created: true
-- name: src/cinema/simple/Statistics.java
+- name: src/cinema/service/TicketService.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/13378#comment
@@ -587,5 +590,5 @@ status: Solved
 feedback:
   message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
     Academy</a> to continue learning.
-  time: Sat, 17 Sep 2022 13:11:26 UTC
+  time: Sun, 18 Sep 2022 18:44:41 UTC
 record: -1

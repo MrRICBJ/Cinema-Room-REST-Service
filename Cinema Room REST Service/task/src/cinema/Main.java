@@ -1,11 +1,7 @@
 package cinema;
 
-import cinema.simple.Cinema;
-import cinema.simple.Seat;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class Main {
